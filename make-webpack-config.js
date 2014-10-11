@@ -23,13 +23,20 @@ module.exports = function(options) {
 		"md|markdown": ["html-loader", "markdown-loader"],
 	};
 	var stylesheetLoaders = {
-		"css": "css-loader",
+		"css": "css-loader!url-loader",
 		"less": "css-loader!less-loader",
 		"styl": "css-loader!stylus-loader",
 		"sass": "css-loader!sass-loader",
-	}
+                "woff": "url-loader?limit=10000&minetype=application/font-woff" ,
+      "ttf": "file-loader" ,
+      "eot": "file-loader" ,
+      "svg": "file-loader" 
+      }
 	var additionalLoaders = [
-		// { test: /some-reg-exp$/, loader: "any-loader" }
+        { test: /\.woff$/,   loader: "url-loader?limit=10000&minetype=application/font-woff" },
+      { test: /\.ttf$/,    loader: "file-loader" },
+      { test: /\.eot$/,    loader: "file-loader" },
+      { test: /\.svg$/,    loader: "file-loader" }
 	];
 	var alias = {
 
@@ -40,7 +47,7 @@ module.exports = function(options) {
 	var externals = [
 
 	];
-	var modulesDirectories = ["web_modules", "node_modules"];
+	var modulesDirectories = ["web_modules", "node_modules", "bower_components"];
 	var extensions = ["", ".web.js", ".js", ".jsx"];
 	var root = path.join(__dirname, "app");
 	var output = {

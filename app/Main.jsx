@@ -1,13 +1,18 @@
-/** @jsx React.DOM */
+ /** @jsx React.DOM */ 
+var d3 = require('d3');
 var React = require('react');
 var Chart = require('Vis/Chart');
 var Nyt_api = require('Vis/NYT_api');
+var Input = require('react-bootstrap/Input');
+var Row = require('react-bootstrap/Row');
+var Col = require('react-bootstrap/Col');
+// global data
+processed_data = [];
 require("./Application.less");
 var sampleData = [
   {id: '5fbmzmtc', x: 7, y: 41, z: 6},
   {id: 's4f8phwm', x: 11, y: 45, z: 9},
   {id: 's4f8psssm', x: 11, y: 90, z: 9}
-  // ...
 ];
 
 var Application = React.createClass({
@@ -19,12 +24,11 @@ var Application = React.createClass({
     };
   },
   componentDidMount: function(){
-    var dis = this;
     Nyt_api.get_data('2013', '2014', function(data){
-      dis.setState({data: sampleData,
+      this.setState({data: sampleData,
                     domain: {x: [0, 30], y: [0, 100]}
       });
-    });
+    }.bind(this));
   },
 
   handleSubmit: function(e) {
@@ -34,8 +38,15 @@ var Application = React.createClass({
     if (! start_year || !end_year) {
       return;
     }
-    //var dis = this;
     Nyt_api.get_data(start_year, end_year, function(data){
+      processed_data = d3.nest().key(function(d){return d.value;})
+                             .entries(data, d3.map);
+      processed_data.forEach(function(d){
+                          d.count = d.values.length;
+                         });
+      processed_data.sort(function(a, b){
+          return b.count - a.count;
+        });
       this.setState({data: data,
                     domain: {x: [0, 30], y: [0, 100]}
       });
@@ -47,19 +58,20 @@ var Application = React.createClass({
     console.log(this.state.data);
     return (
       <div className="App">
-        <form className="commentForm" 
-          onSubmit={this.handleSubmit}>
-          <input type="text" placeholder="first year" 
-            ref="start_year"/>
-          <input type="text" placeholder="second year" 
-            ref="end_year"/>
-          <input type="submit" value="Post" />
-        </form>
+        <Input label="Input wrapper" help="Use this when you need something other than the available input types." wrapperClassName="wrapper">
+      <Row>
+        <Col xs={6}>
+          <input type="text" className="form-control" />
+        </Col>
+        <Col xs={6}>
+          <input type="text" className="form-control" />
+        </Col>
+      </Row>
+    </Input>
         <Chart data={this.state.data} domain={this.state.domain} />
       </div>
     );
   }
 });                                                                     
-
 React.renderComponent(<Application />, document.body);
 module.exports = Application;
