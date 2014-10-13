@@ -6,6 +6,7 @@ var Nyt_api = require('Vis/NYT_api');
 var Input = require('react-bootstrap/Input');
 var Row = require('react-bootstrap/Row');
 var Col = require('react-bootstrap/Col');
+var Label = require('react-bootstrap/Label');
 // global data
 processed_data = [];
 require("./Application.less");
@@ -19,23 +20,41 @@ var Application = React.createClass({
   getInitialState: function() {
     return {
       data: [],
+      start_year: 2013,
+      end_year: 2014,
       domain: {x: [0, 30], y: [0, 100]},
-      value: "hello"
+    };
+  },
+  getDefaultProps: function(){
+    return {
+      data: [],
+      start_year: 2013,
+      end_year: 2014,
+      domain: {x: [0, 30], y: [0, 100]},
     };
   },
   componentDidMount: function(){
-    Nyt_api.get_data('2013', '2014', function(data){
+    Nyt_api.get_data(this.props.start_year, this.props.end_year, 
+                     function(data){
       this.setState({data: sampleData,
                     domain: {x: [0, 30], y: [0, 100]}
       });
     }.bind(this));
   },
+  handleChange: function(event) {
+    this.setState({start_year: event.target.value});
+  },
 
   handleSubmit: function(e) {
     e.preventDefault();
-    var start_year = this.refs.start_year.getDOMNode().value.trim();
-    var end_year = this.refs.end_year.getDOMNode().value.trim();
+    this.props.start_year = this.refs.start_year.getDOMNode().value;
+    this.props.end_year = this.refs.end_year.getDOMNode().value;
+    var start_year = this.props.start_year;
+    var end_year = this.props.end_year;
+    console.log("start_year"+start_year);
+    // TODO: proper validation
     if (! start_year || !end_year) {
+      console.log("wrong values");
       return;
     }
     Nyt_api.get_data(start_year, end_year, function(data){
@@ -47,9 +66,9 @@ var Application = React.createClass({
       processed_data.sort(function(a, b){
           return b.count - a.count;
         });
-      this.setState({data: data,
+        this.setState({data: data,
                     domain: {x: [0, 30], y: [0, 100]}
-      });
+        });
     }.bind(this));
     return;
   },
@@ -57,18 +76,43 @@ var Application = React.createClass({
   render: function() {
     console.log(this.state.data);
     return (
-      <div className="App">
-        <Input label="Input wrapper" help="Use this when you need something other than the available input types." wrapperClassName="wrapper">
-      <Row>
-        <Col xs={6}>
-          <input type="text" className="form-control" />
-        </Col>
-        <Col xs={6}>
-          <input type="text" className="form-control" />
-        </Col>
-      </Row>
-    </Input>
+      <div className="container ">
+        <div className="col-md-9">
+          <Input label="Input wrapper" help="descr" 
+            wrapperClassName="wrapper">
+        <Row>
+          <Col xs={3}>start year </Col>
+          <Col xs={3}>end year</Col>
+        </Row>
+        <Row>
+          <form onSubmit={this.handleSubmit}>
+          <Col xs={3}>
+            <input type="number" className="form-control" 
+              ref="start_year" value={this.state.start_year}
+              onChange={function(event) {
+                  this.setState({start_year: event.target.value});
+                }.bind(this)
+              }
+            />
+          </Col>
+          <Col xs={3}>
+            <input type="number" className="form-control" 
+              ref="end_year" value={this.state.end_year}
+              onChange={function(event) {
+                  this.setState({end_year: event.target.value});
+                }.bind(this)
+              }
+            />
+          </Col>
+          <Col xs={3}>
+            <input type="submit" bsStyle='primary' 
+              value="Submit" />
+          </Col>
+        </form>
+        </Row>
+      </Input>
         <Chart data={this.state.data} domain={this.state.domain} />
+        </div>
       </div>
     );
   }
