@@ -34,7 +34,7 @@ var Application = React.createClass({
   getInitialState: function() {
     return {
       data: [],
-      start_year: 2013,
+      start_year: 2014,
       end_year: 2014,
       domain: {x: [0, 30], y: [0, 100]},
     };
@@ -42,19 +42,33 @@ var Application = React.createClass({
   getDefaultProps: function(){
     return {
       data: [],
-      start_year: 2013,
+      start_year: 2014,
       end_year: 2014,
       domain: {x: [0, 30], y: [0, 100]}
     };
   },
+  nest_data: function(data){
+    var nested_data = d3.nest().key(function(d){return d.text;})
+                           .entries(data, d3.map);
+    nested_data.forEach(function(d){
+                        d.size = d.values.length;
+                       });
+    nested_data.sort(function(a, b){
+        return b.count - a.count;
+      });
+      return nested_data;
+  },
   componentDidMount: function(){
     Nyt_api.get_data(this.props.start_year, this.props.end_year, 
                      function(data){
-      this.setState({data: data});
+    console.log("nested_data");
+    var nested_data = this.nest_data(data);
+    console.log(nested_data);
+    this.setState({data: nested_data});
     }.bind(this));
   },
   handleChange: function(event) {
-    this.setState({start_year: event.target.value});
+    this.setProps({start_year: event.target.value});
   },
 
   handleSubmit: function(e) {
@@ -70,16 +84,11 @@ var Application = React.createClass({
       return;
     }
     Nyt_api.get_data(start_year, end_year, function(data){
-      processed_data = d3.nest().key(function(d){return d.value;})
-                             .entries(data, d3.map);
-      processed_data.forEach(function(d){
-                          d.count = d.values.length;
-                         });
-      processed_data.sort(function(a, b){
-          return b.count - a.count;
-        });
-        this.setState({data: data,
-                    domain: {x: [0, 30], y: [0, 100]}
+      nested_data = this.nest_data(data);
+      console.log("nested_data");
+      console.log(nested_data);
+      this.setState({data: nested_data,
+                  domain: {x: [0, 30], y: [0, 100]}
         });
     }.bind(this));
     return;
@@ -100,18 +109,18 @@ var Application = React.createClass({
           <form onSubmit={this.handleSubmit}>
           <Col xs={3}>
             <input type="number" className="form-control" 
-              ref="start_year" value={this.state.start_year}
+              ref="start_year" defaultValue="2014"
               onChange={function(event) {
-                  this.setState({start_year: event.target.value});
+                this.props.start_year = event.target.value;
                 }.bind(this)
               }
             />
           </Col>
           <Col xs={3}>
             <input type="number" className="form-control" 
-              ref="end_year" value={this.state.end_year}
+              ref="end_year" defaultValue="2014"
               onChange={function(event) {
-                  this.setState({end_year: event.target.value});
+                this.props.end_year = event.target.value;
                 }.bind(this)
               }
             />

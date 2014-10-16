@@ -13,7 +13,7 @@ var test_data = ["Hello", "world", "normally", "you", "want",
       })
 
 d3Cloud.create = function(el, state) { //TODO: props to include as arg
-  d3.select("body").append("svg")
+  d3.select(el).append("svg")
     .attr("width", 500)
     .attr("height", 500)
   .append("g")
@@ -24,9 +24,13 @@ d3Cloud.create = function(el, state) { //TODO: props to include as arg
 
 d3Cloud.update = function(el, cloud, state){
   console.log("state data");
-  console.log(state.data);
+  
+  var data = state.data.map(function(d) {
+        return {text: d.key, size: 10 + d.size * 10};
+      });
+
   d3_cloud.cloud().size([500, 500])
-                .words(test_data)
+                .words(data)
                 .padding(5)
                 .rotate(function() { return ~~(Math.random() * 2) * 90; })
                 .font("Impact")
@@ -38,7 +42,6 @@ d3Cloud.update = function(el, cloud, state){
 d3Cloud.new_draw = function(words){
   var cloud = d3.select("g").selectAll("g text")
                         .data(words, function(d) { return d.text; })
-
         //Entering words
         cloud.enter()
             .append("text")
@@ -51,7 +54,7 @@ d3Cloud.new_draw = function(words){
         //Entering and existing words
         cloud
             .transition()
-                .duration(10)
+                .duration(200)
                 .style("font-size", function(d) { return d.size + "px"; })
                 .attr("transform", function(d) {
                     return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";

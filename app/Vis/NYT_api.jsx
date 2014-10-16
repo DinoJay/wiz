@@ -3,15 +3,13 @@ var NYT_api = {};
 
 NYT_api.get_data = function(start_year, end_year, callback) {
 //used to get progress (not done yet)
-  var page_limit = 10;
+  var page_limit = 1;
   var searchTerm = "";
   var per_set = 10;
   var page_counter = 0;
   var totalDone = 0;
   // global data used for processSets
   var globalData = [];
-  //var start_year = $start_year.val();
-  //var end_year = $end_year.val();
   var currentYear = start_year; 
   var api_key = "888faef2859ec5406dc922631b612ac1:9:69878891";
 
@@ -90,6 +88,13 @@ function processSets(globalData, searchTerm, start_year, end_year,
       var headline = doc.headline.main.toLowerCase();
       var words = headline.match(/\S+/g); 
       doc.keywords.forEach(function(keyword){
+        words.forEach(function(word){
+          globalData.push({
+            text: word,
+            doc: doc
+          });
+        })
+        /*
         globalData.push({
           name: keyword.name,
           value: keyword.value,
@@ -99,6 +104,7 @@ function processSets(globalData, searchTerm, start_year, end_year,
           article: headline,
           date: doc.pub_date
         });
+        */
       });
     } 
     else {
@@ -110,6 +116,13 @@ function processSets(globalData, searchTerm, start_year, end_year,
         docs.forEach(function(doc){
           var headline = doc.headline.main.toLowerCase();
           var words = headline.match(/\S+/g); 
+          words.forEach(function(word){
+            globalData.push({
+              text: word,
+              doc: doc
+            });
+          })
+          /*
           doc.keywords.forEach(function(keyword){
             globalData.push({
               name: keyword.name,
@@ -121,6 +134,7 @@ function processSets(globalData, searchTerm, start_year, end_year,
               date: doc.pub_date
             });
           });
+          */
         });
       }
     }
