@@ -1,29 +1,18 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/local/bin/node',
-1 verbose cli   '/usr/local/bin/npm',
-1 verbose cli   'run',
-1 verbose cli   'dev-server' ]
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'run', 'dev-server', 'e' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.32
-4 verbose run-script [ 'predev-server', 'dev-server', 'postdev-server' ]
-5 info predev-server react-starter@0.0.0
-6 info dev-server react-starter@0.0.0
-7 verbose unsafe-perm in lifecycle true
-8 info react-starter@0.0.0 Failed to exec dev-server script
-9 error react-starter@0.0.0 dev-server: `webpack-dev-server --content-base config/dev-server-public --config webpack-dev-server.config.js --progress --colors --port 2992`
-9 error Exit status 8
-10 error Failed at the react-starter@0.0.0 dev-server script.
-10 error This is most likely a problem with the react-starter package,
-10 error not with npm itself.
-10 error Tell the author that this fails on your system:
-10 error     webpack-dev-server --content-base config/dev-server-public --config webpack-dev-server.config.js --progress --colors --port 2992
-10 error You can get their info via:
-10 error     npm owner ls react-starter
-10 error There is likely additional logging output above.
-11 error System Linux 3.13.0-36-generic
-12 error command "/usr/local/bin/node" "/usr/local/bin/npm" "run" "dev-server"
-13 error cwd /home/djan/dev/wiz
-14 error node -v v0.10.32
-15 error npm -v 1.4.28
-16 error code ELIFECYCLE
-17 verbose exit [ 1, true ]
+4 verbose node symlink /usr/bin/node
+5 error Error: ENOENT, open '/home/djan/dev/wiz/node_modules/dev-server/package.json'
+6 error If you need help, you may report this *entire* log,
+6 error including the npm and node versions, at:
+6 error     <http://github.com/npm/npm/issues>
+7 error System Linux 3.13.0-36-generic
+8 error command "/usr/bin/node" "/usr/bin/npm" "run" "dev-server" "e"
+9 error cwd /home/djan/dev/wiz
+10 error node -v v0.10.32
+11 error npm -v 1.4.28
+12 error path /home/djan/dev/wiz/node_modules/dev-server/package.json
+13 error code ENOENT
+14 error errno 34
+15 verbose exit [ 34, true ]

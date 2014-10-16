@@ -73,7 +73,10 @@ module.exports = function(options) {
 			}
 		},
 		new webpack.PrefetchPlugin("react"),
-		new webpack.PrefetchPlugin("react/lib/ReactComponentBrowserEnvironment")
+		new webpack.PrefetchPlugin("react/lib/ReactComponentBrowserEnvironment"),
+                new webpack.ResolverPlugin(
+            new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
+        )
 	];
 	if(options.prerender) {
 		aliasLoader["react-proxy$"] = "react-proxy/unavailable";

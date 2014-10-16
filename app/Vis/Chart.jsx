@@ -37,7 +37,7 @@ var Chart = React.createClass({
 
   componentWillUnmount: function() {
     var el = this.getDOMNode();
-    d3Chart.destroy(el);
+    //d3Chart.destroy(el);
   },
 
   render: function() {

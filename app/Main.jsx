@@ -2,11 +2,25 @@
 var d3 = require('d3');
 var React = require('react');
 var Chart = require('Vis/Chart');
+var d3Cloud = require('Vis/d3Cloud');
+var Cloud = require('Vis/Cloud');
 var Nyt_api = require('Vis/NYT_api');
 var Input = require('react-bootstrap/Input');
 var Row = require('react-bootstrap/Row');
 var Col = require('react-bootstrap/Col');
 var Label = require('react-bootstrap/Label');
+var cl= require("Vis/d3.layout.cloud");
+
+/* Testting 
+var state = {};
+var data = [
+      "Hello", "world", "normally", "you", "want", "more", "words",
+      "than", "this"].map(function(d) {
+      return {text: d, size: 10 + Math.random() * 90};
+      });
+      //d3Cloud.create("body", state);
+*/
+
 // global data
 processed_data = [];
 require("./Application.less");
@@ -30,15 +44,13 @@ var Application = React.createClass({
       data: [],
       start_year: 2013,
       end_year: 2014,
-      domain: {x: [0, 30], y: [0, 100]},
+      domain: {x: [0, 30], y: [0, 100]}
     };
   },
   componentDidMount: function(){
     Nyt_api.get_data(this.props.start_year, this.props.end_year, 
                      function(data){
-      this.setState({data: sampleData,
-                    domain: {x: [0, 30], y: [0, 100]}
-      });
+      this.setState({data: data});
     }.bind(this));
   },
   handleChange: function(event) {
@@ -111,7 +123,7 @@ var Application = React.createClass({
         </form>
         </Row>
       </Input>
-        <Chart data={this.state.data} domain={this.state.domain} />
+      <Cloud data={this.state.data}/> 
         </div>
       </div>
     );
