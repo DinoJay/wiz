@@ -8,12 +8,14 @@ var Cloud = React.createClass({
         var el = this.getDOMNode();
         //TODO: props
         //this.props.base_cloud = 
-        cloud_init = d3Cloud.create(el, this.getCloudState()); 
+        d3Cloud.create(el, this.getCloudState(),
+                                   this.props.callback); 
   },
 
   componentDidUpdate: function() {
         var el = this.getDOMNode();
-        d3Cloud.update(el, cloud_init, this.getCloudState());
+        d3Cloud.update(el, this.getCloudState(), 
+                       this.props.callback);
   },
 
   getCloudState: function() {

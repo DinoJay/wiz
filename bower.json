@@ -14,7 +14,7 @@
     "bootstrap": "~3.2.0",
     "d3-cloud": "~1.0.5",
     "d3": "~3.4.12",
-    "d3-parsets":"1.2.4"
+    "crossfilter":"1.3.11"
   },
   "description": "text vis",
   "main": "Main.jsx",

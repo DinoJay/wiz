@@ -17,10 +17,9 @@ var Chart = React.createClass({
 
   componentDidMount: function() {
     var el = this.getDOMNode();
-    d3Chart.create(el, {
-      width: '100%',
-      height: '300px'
-    }, this.getChartState());
+    d3Chart.create(el, {width: this.props.width, 
+                        height: this.props.height}, 
+                        this.getChartState());
   },
 
   componentDidUpdate: function() {
@@ -30,8 +29,7 @@ var Chart = React.createClass({
 
   getChartState: function() {
     return {
-      data: this.props.data,
-      domain: this.props.domain
+      data: this.props.data
     };
   },
 

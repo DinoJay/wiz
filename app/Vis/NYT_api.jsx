@@ -1,73 +1,71 @@
 $ = require('jquery');
-var NYT_api = {};
+S = require('string');
+var stem = require('stem-porter');
+var stoplist = ["the", "for", "in", "year", "years", "but", "of", "new",
+                "to", "at", "a", "on", "from", "as", "every", "say", 
+                "that", "make", "de", "two", "up", "with", "no", "is", 
+                "may", "more", "before", "an", "by", "get", "best", 
+                "back", "it", "can", "are", "says", "how", "time", "times",
+                "again", "top", "when", "week", "and", "day", "cut", 
+                "wait", "since", "what", "least", "part", "have", "start",
+                "win", "be", "talks", "out", "into", "big", "talks", 
+                "found", "over", "after", "your", "first", "high", 
+                "keep", "their", "some", "open", "ends", "was", "its", 
+                "notice:", "end", "ahead", "this", "will", "help", "away",
+                "little", "another", "or", "not", "around", "you", 
+                "look", "has", "where", "about", "listings", "those", 
+                "still", "case", "us", "all", "against", "man", "tour",
+                "off", "team", "group", "paid", "past", "test", "down", 
+                "reach", "wins", "raises", "4", "early", "take", "set",
+                "response", "won't", "should", "2", "seek", "rise", 
+                "oct.", "calls", "charged", "his", "charged", "deal", 
+                "report", "finally", "posts", "hong", "behind"
+                ];
 
-NYT_api.get_data = function(start_year, end_year, callback) {
+var NYT_api = {};
+NYT_api.get_data = function(year, cur_month, page_limit, callback) {
 //used to get progress (not done yet)
-  var page_limit = 1;
   var searchTerm = "";
   var per_set = 10;
   var page_counter = 0;
   var totalDone = 0;
   // global data used for processSets
   var globalData = [];
-  var currentYear = start_year; 
-  var api_key = "888faef2859ec5406dc922631b612ac1:9:69878891";
+  var api_key = "1ca882140f11fee967a0d3a79b348f93:6:69878891";
 
   //$progress.text("Beginning work...");
-  return processSets(globalData, searchTerm, start_year, end_year, 
-                     currentYear, per_set, page_counter, page_limit, 
-                     totalDone, api_key, callback);
+  return processSets(globalData, cur_month, year, per_set, page_counter, 
+                     page_limit, totalDone, api_key, callback);
 };
 
-function fetchForYear(year, term, page, totalDone, api_key) {
+function fetchForMonth(year, month, page, totalDone, api_key) {
   //YYYYMMDD
-  var startYearStr = year + "0101";
-  var endYearStr = year + "1231";
-  console.log('doing year '+year+' with offset '+page);
+  var month_str;
+  if(month < 10) month_str = "0"+month; else month_str = month.toString();
+  var startYearStr = year + month_str+"01";
+  var endYearStr = year + month_str+"30";
+  console.log('doing year '+year+'and month '+month+' with offset '+page);
   
   return $.get("http://api.nytimes.com/svc/search/v2/articlesearch.json", {
           "api-key":api_key,
-          sort:"oldest",
+          sort:"newest",
           begin_date:startYearStr,
           end_date:endYearStr,
-          fq:"headline:(\""+term+"\")",
           page:page,
-          fl:"keywords,headline,snippet,pub_date"}, function(res) {
+          fl:"keywords,headline,snippet,pub_date,news_desk"}, function() {
             totalDone++;
   }, "JSON");
 }
 
-function fetchForYear(year, page, totalDone, api_key) {
-  //YYYYMMDD
-  var startYearStr = year + "0101";
-  var endYearStr = year + "1231";
-  console.log('doing year '+year+' with offset '+page);
-  
-  return $.get("http://api.nytimes.com/svc/search/v2/articlesearch.json", {
-          "api-key":api_key,
-          sort:"oldest",
-          begin_date:startYearStr,
-          end_date:endYearStr,
-          page:page,
-          fl:"keywords,headline,snippet,pub_date"}, function() {
-            totalDone++;
-  }, "JSON");
-}
-
-function processSets(globalData, searchTerm, start_year, end_year, 
-                     currentYear, per_set, page_counter, page_limit,
+function processSets(globalData, cur_month, 
+                     year, per_set, page_counter, page_limit,
                      totalDone, api_key, callback){
   var promises = [];
   for(var i=0;i<per_set;i++) {
     page_counter++;
 
-    var result;
-    if (typeof searchTerm != "undefined" || searchTerm !== ""){
-      result = fetchForYear(currentYear, page_counter, totalDone, api_key);
-    }else{
-      result = fetchForYear(currentYear, searchTerm, page_counter, 
-                            totalDone, api_key);
-    }
+    var result = fetchForMonth(year, cur_month, page_counter, totalDone, 
+                             api_key);
     promises.push(result);
   }
   $.when.apply($, promises).done(function() {
@@ -79,85 +77,43 @@ function processSets(globalData, searchTerm, start_year, end_year,
     
     //massage into something simpler
     // handle cases where promises array is 1
-    var toAddRaw;
     var docs; 
-    if(promises.length === 1) {
-      toAddRaw = arguments[0];
-      doc = toAddRaw.response.docs[0];
-      console.log(docs[0]);
-      var headline = doc.headline.main.toLowerCase();
-      var words = headline.match(/\S+/g); 
-      doc.keywords.forEach(function(keyword){
-        words.forEach(function(word){
-          globalData.push({
-            text: word,
-            doc: doc
-          });
-        })
-        /*
-        globalData.push({
-          name: keyword.name,
-          value: keyword.value,
-          words: words,
-          rank: keyword.rank,
-          is_major: keyword.is_major,
-          article: headline,
-          date: doc.pub_date
-        });
-        */
-      });
-    } 
-    else {
-      for(var i=0,len=arguments.length;i<len;i++) {
-        toAddRaw = arguments[i][0];
-        docs = toAddRaw.response.docs;
-        console.log(docs);
-        var year = currentYear;
-        docs.forEach(function(doc){
-          var headline = doc.headline.main.toLowerCase();
-          var words = headline.match(/\S+/g); 
+    for(var i=0,len=arguments.length;i<len;i++) {
+      toAddRaw = (promises.length !== 1) ? arguments[i][0]: arguments[0];
+      docs = toAddRaw.response.docs;
+      console.log(docs);
+      docs.forEach(function(doc){
+        if(doc.headline.main !== undefined){
+          var headline_lc = doc.headline.main.toLowerCase();
+          var headline_uc = doc.headline.main;
+        // TODO: trim words
+          var words = headline_lc.match(/\S+/g); 
           words.forEach(function(word){
-            globalData.push({
-              text: word,
-              doc: doc
-            });
-          })
-          /*
-          doc.keywords.forEach(function(keyword){
-            globalData.push({
-              name: keyword.name,
-              value: keyword.value,
-              words: words,
-              rank: keyword.rank,
-              is_major: keyword.is_major,
-              article: headline,
-              date: doc.pub_date
-            });
+            if (stoplist.indexOf(word) == -1){
+              globalData.push({
+                text: word,
+                headline: headline_uc,
+                doc: doc,
+                pub_date: doc.pub_date,
+                keywords: doc.keywords,
+                news_desk: doc.news_desk
+              });
+            }
           });
-          */
-        });
-      }
+        }
+      });
     }
     var ret;
     if(docs.length > 0 && page_counter < page_limit){
       setTimeout(function(){
-        ret = processSets(globalData, searchTerm, start_year, end_year, 
-                    currentYear, per_set, page_counter, page_limit, 
+        console.log("FIRST");
+        ret = processSets(globalData, cur_month, 
+                    year, per_set, page_counter, page_limit, 
                     totalDone, api_key, callback);
       }, 900);
     }else {
-      currentYear++;
-      page_counter = 0;
-      if(currentYear <= end_year) {
-        setTimeout(function(){
-          ret = processSets(globalData, searchTerm, start_year, end_year, 
-                      currentYear, per_set, page_counter, page_limit, 
-                      totalDone, api_key, callback);
-        }, 900);
-      }else{
         // callback with the data to be returned
-        callback(globalData);
-      }
+      callback(globalData);
     }
   });
 }

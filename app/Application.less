@@ -33,3 +33,125 @@ a {
   border-radius: 4px;
   background-color: #fff;
 }
+
+.griddle {
+  margin:20px 0px 20px 0px;
+  -webkit-user-select:none;
+  -khtml-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+  .next, .previous, .settings {
+    cursor:pointer;
+  }
+  .griddle {
+    margin:0px;
+    table {
+      border:0px;
+    }
+    tr:first-child > td {
+      border-top:none;
+    }
+    .grid-container {
+      box-shadow:none;
+      margin-bottom:0px;
+    }
+  }
+  *:not(input.field) {
+    -webkit-user-select:none;
+    -khtml-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+  }
+  .griddle-settings {
+    padding:10px 10px 0px 10px;
+    margin:0px 0px 10px 0px;
+    h5 {
+      margin:0px 0px 10px 0px;
+    }
+    .column {
+      width:160px;
+      float:left;
+      margin-top:0px;
+    }
+  }
+  .griddle-settings:before {
+    content:" ";
+    display:table;
+  }
+  .griddle-settings:after {
+    content:" ";
+    display:table;
+    clear:both;
+  }
+  table {
+    table-layout:fixed;
+  }
+  .table-header {
+    margin-bottom:0px;
+  }
+  th {
+    overflow:hidden;
+    cursor:pointer;
+  }
+  .sort-ascending:after {
+    content:'\25B2';
+    font-size:12px;
+    margin-left:5px;
+  }
+  .sort-descending:after {
+    content:'\25BC';
+    font-size:12px;
+    margin-left:5px;
+  }
+  .parent-row td:first-child:before {
+    content:'\25BA';
+    font-size:12px;
+    margin-right:5px;
+  }
+  .parent-row.expanded td:first-child:before {
+    content:'\25BC';
+  }
+  .standard-row td:first-child:before {
+    content:' ';
+    margin-right:15px;
+  }
+  .child-row td {
+    padding-left:20px;
+    border-bottom:0px;
+  }
+  .child-row td:first-child:before {
+    content:' ';
+    margin-right:15px;
+  }
+  .grid-body table {
+    margin-bottom:0px;
+  }
+  .settings i {
+    top:3px;
+  }
+  .top-section {
+    margin-bottom:10px;
+  }
+  .grid-footer {
+    padding:10px 20px 10px 20px;
+    .glyphicon {
+      font-size:12px;
+      margin:0px 5px 0px 5px;
+    }
+  }
+  .right {
+    text-align:right;
+  }
+  .center {
+    text-align:center;
+  }
+}
+.griddle-parent {
+  padding:0px;
+}
+.griddle-settings .griddle-columns {
+  border-bottom:1px solid #ededed;
+  margin-bottom:10px;
+}
