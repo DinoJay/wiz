@@ -1,18 +1,27 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'start', 'dev-server' ]
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'prune' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.33
 4 verbose node symlink /usr/bin/node
-5 error Error: ENOENT, open '/home/djan/dev/wiz/node_modules/dev-server/package.json'
-6 error If you need help, you may report this *entire* log,
-6 error including the npm and node versions, at:
-6 error     <http://github.com/npm/npm/issues>
-7 error System Linux 3.13.0-37-generic
-8 error command "/usr/bin/node" "/usr/bin/npm" "start" "dev-server"
-9 error cwd /home/djan/dev/wiz
-10 error node -v v0.10.33
-11 error npm -v 1.4.28
-12 error path /home/djan/dev/wiz/node_modules/dev-server/package.json
-13 error code ENOENT
-14 error errno 34
-15 verbose exit [ 34, true ]
+5 warn package.json react-starter@0.0.0 No repository field.
+6 verbose node_modules/adazzle-react-grid unbuild
+7 info preuninstall adazzle-react-grid@0.0.2
+8 info uninstall adazzle-react-grid@0.0.2
+9 verbose true,/home/djan/dev/wiz/node_modules,/home/djan/dev/wiz/node_modules unbuild adazzle-react-grid@0.0.2
+10 info postuninstall adazzle-react-grid@0.0.2
+11 error Error: EACCES, unlink '/home/djan/dev/wiz/node_modules/adazzle-react-grid/node_modules/reactify/node_modules/.bin/jsx'
+11 error  { [Error: EACCES, unlink '/home/djan/dev/wiz/node_modules/adazzle-react-grid/node_modules/reactify/node_modules/.bin/jsx']
+11 error   errno: 3,
+11 error   code: 'EACCES',
+11 error   path: '/home/djan/dev/wiz/node_modules/adazzle-react-grid/node_modules/reactify/node_modules/.bin/jsx' }
+12 error Please try running this command again as root/Administrator.
+13 error System Linux 3.13.0-39-generic
+14 error command "/usr/bin/node" "/usr/bin/npm" "prune"
+15 error cwd /home/djan/dev/wiz
+16 error node -v v0.10.33
+17 error npm -v 1.4.28
+18 error path /home/djan/dev/wiz/node_modules/adazzle-react-grid/node_modules/reactify/node_modules/.bin/jsx
+19 error code EACCES
+20 error errno 3
+21 error stack Error: EACCES, unlink '/home/djan/dev/wiz/node_modules/adazzle-react-grid/node_modules/reactify/node_modules/.bin/jsx'
+22 verbose exit [ 3, true ]

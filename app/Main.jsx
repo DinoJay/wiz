@@ -1,22 +1,25 @@
  /** @jsx React.DOM */ 
 var d3 = require('d3');
+var crossfilter = require('crossfilter');
 var React = require('react');
+var Griddle = require('griddle-react');
 var Chart = require('Vis/Chart');
-var d3Cloud = require('Vis/d3Cloud');
 var Cloud = require('Vis/Cloud');
+var fontSize = d3.scale.log().range([10, 100]);
 var Nyt_api = require('Vis/NYT_api');
+// Bootstrap
 var Input = require('react-bootstrap/Input');
 var Row = require('react-bootstrap/Row');
 var Col = require('react-bootstrap/Col');
 var Label = require('react-bootstrap/Label');
-var cl = require("Vis/d3.layout.cloud");
-var $ = require('jquery');
-var d3 = require('d3');
-var crossfilter = require('crossfilter');
-// number of api requests to make
-var page_limit = 10;
-var fontSize = d3.scale.log().range([10, 100]);
 
+var id = 0;
+// number of api requests to make
+var page_limit = 100;
+
+// additional stylesheets
+require("./Application.less");
+require('Vis/grid/griddle.less');                                             
 Array.prototype.uniqueKeywords = function() {
     var unique = [];
     for (var i = 0; i < this.length; i++) {
@@ -50,20 +53,9 @@ var columnMeta = [
     "order": 1,
     "locked": false,
     "visible": true
-  },
-  {
-    "columnName": "key",
-    "order": 1,
-    "locked": false,
-    "visible": true
-  },
+  }
 ];
-var Griddle = require('Vis/grid/griddle');
 
-var records =  [];
-
-require("./Application.less");
-require('Vis/grid/griddle.less');                                             
 var Application = React.createClass({
   getInitialState: function() {
     return {
@@ -75,12 +67,22 @@ var Application = React.createClass({
       word_clicked: false
     }; 
   }, 
+  
+  DataMethod: function(filterString, sortColumn, sortAscending, 
+                              page, pageSize, callback) {
+      callback({
+        results : this.state.grid_data,
+        pageSize : 20,
+        totalResults: 200
+      });
+  },
 
-    getDefaultProps: function(){ return { cloud_data: [],
-      start_year: 2014,
-      month: 10,
-      end_year: 2014,
-    };
+  getDefaultProps: function(){ 
+    return { cloud_data: [],
+            start_year: 2014,
+            month: 10,
+            end_year: 2014,
+           };
   },
 
   nest_data: function(data){
@@ -90,37 +92,26 @@ var Application = React.createClass({
       d.count = d.values.length;
       d.size = fontSize(d.count/(5*1));
 
-      var keywords = [];
-      d.values.forEach(function(d){
-        keywords = keywords.concat(d.keywords);
-      });
-      console.log(keywords);
-      d.keywords = keywords;
-
       var pub_dates = [];
       d.values.forEach(function(d){
         pub_dates = pub_dates.concat(d.pub_date);
       });
       d.pub_dates = pub_dates;
-     });
+    });
 
     nested_data.sort(function(a, b){return b.count-a.count;});
       return nested_data.slice(0, 120);
   },
   
-  grid_data: function(data, that){
+  grid_data: function(data){
     var grid_data = d3.nest().key(function(d){return d.headline;})
       .entries(data, d3.map);
-    var id = 0;
     grid_data.forEach(function(d){
-      d.id = id;
       d.article = d.key;
-      records.push(d);
-      id++;
+      d.id = id++;
     });
-    that.setState({grid_data: records});
     return grid_data;
-  }.bind(this),
+  },
 
   loadCloud: function(interval){
     var counter = 0;
@@ -146,22 +137,16 @@ var Application = React.createClass({
     Nyt_api.get_data(this.props.start_year, 10, page_limit, 
       function(cloud_data){
         var nested_data = this.nest_data(cloud_data);
-        records = this.grid_data(cloud_data, this);
-
         this.setState({cloud_data: nested_data,
-                      init_data: nested_data,
-                      grid_data: records});
+                      init_cloud_data: nested_data,
+                      grid_data: this.grid_data(cloud_data)
+                      });
         clearInterval(t);
     }.bind(this));
   },
 
   handleSubmit: function(e) {
-    while(records.length > 0) {
-      records.pop();
-    }
     e.preventDefault();
-    this.props.start_year = this.refs.start_year.getDOMNode().value;
-    this.props.end_year = this.refs.end_year.getDOMNode().value;
     var start_year = this.props.start_year;
     var end_year = this.props.end_year;
     console.log("start_year"+start_year);
@@ -172,17 +157,57 @@ var Application = React.createClass({
     }
     // function call runs every second
     var t = this.loadCloud(1000);
-    Nyt_api.get_data(start_year, end_year, page_limit, 
-                     function(cloud_data){
-      nested_data = this.nest_data(cloud_data);
-
-      this.setState({raw_data: cloud_data,
-                     cloud_data: nested_data,
-                     init_data: nested_data
-                    });
-      clearInterval(t);
+    Nyt_api.get_data(this.props.start_year, 10, page_limit, 
+      function(cloud_data){
+        var nested_data = this.nest_data(cloud_data);
+        this.setState({cloud_data: this.nest_data(cloud_data),
+                        init_cloud_data: nested_data,
+                        grid_data: nested_data
+                      });
+        clearInterval(t);
     }.bind(this));
     return;
+  },
+  // TODO: layout obsolete
+  word_click_handler: function(d, layout){
+    if(!this.state.clicked){
+      alert(d.count);
+      var cloud_filter = crossfilter(this.state.cloud_data);
+      var keyDimension = cloud_filter.dimension(function(d) { 
+        return d.key; 
+      });
+      keyDimension.filter(d.text);
+      var sel_word = keyDimension.top(Infinity)[0];
+      var keywords = [];
+      sel_word.values.forEach(function(d){
+        keywords = keywords.concat(d.keywords);
+      });
+      var nested_keywords = d3.nest().key(function(d){return d.value;})
+                              .entries(keywords, d3.map);
+      nested_keywords.forEach(function(d){
+        d.size = 15 + d.values.length * 10;
+      });
+
+      var grid_data = sel_word.values.map(function(d){
+        d.article = d.headline;
+        return d;
+      });
+      nested_keywords.push({key: d.text, size: 50});
+      console.log("sel_word");
+      console.log(sel_word);
+      this.setState({cloud_data: nested_keywords,
+                     init_cloud_data: this.state.cloud_data,
+                     init_grid_data: this.state.grid_data,
+                     grid_data: grid_data,
+                     clicked: true
+                    });
+    }else{
+      console.log(this.state.init_grid_data);
+      this.setState({cloud_data:this.state.init_cloud_data, 
+                     grid_data: this.state.init_grid_data,
+                     clicked:false
+                    });
+    }
   },
 
   render: function() {
@@ -190,10 +215,6 @@ var Application = React.createClass({
     console.log(this.state.cloud_data);
     console.log("grid data");
     console.log(this.state.grid_data);
-    var cloud_filter = crossfilter(this.state.cloud_data);
-    var keyDimension = cloud_filter.dimension(function(d) { 
-      return d.key; 
-    });
     // TODO: headline filter
     return (
       <div>
@@ -222,7 +243,8 @@ var Application = React.createClass({
               onChange={function(event) {
                   this.props.end_year = event.target.value;
                 }.bind(this)
-              } /> </Col>
+              } />
+          </Col>
           <Col xs={3}>
             <input type="submit" bsStyle='primary' 
               value="Submit" />
@@ -232,32 +254,12 @@ var Application = React.createClass({
       </Input>
       <Col xs={9}> 
         <Cloud data={this.state.cloud_data}
-          callback={function(d, layout){
-            if(!this.state.clicked){
-              alert(d.count);
-              keyDimension.filter(d.text);
-              var sel_word = keyDimension.top(Infinity);
-              var keywords = sel_word[0].keywords.map(function(d){
-                return {key: d.value};
-              });
-              var nested_keyw = d3.nest().key(function(d){return d.key;})
-                           .entries(keywords, d3.map);
-              nested_keyw.forEach(function(d){
-                d.size = 15 + d.values.length * 10;
-              });
-              nested_keyw.push({key: d.text, size: 50});
-              this.setState({cloud_data: nested_keyw,
-                             init_data: this.state.cloud_data,
-                             clicked: true
-                            });
-            }else{
-              var tmp = this.state.init_data;
-              this.setState({ cloud_data:tmp, clicked:false});}
-          }.bind(this)}/> 
+          callback={this.word_click_handler}/> 
 
-          <Griddle 
+          <Griddle
             columns={["id", "article"]}
-            results={this.state.grid_data}
+            getExternalResults={this.DataMethod}
+            resultsPerPage={40}
             showSettings={true}
             columnMetadata={columnMeta}
             tableClassName="table"

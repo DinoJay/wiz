@@ -1,6 +1,5 @@
 $ = require('jquery');
 S = require('string');
-var stem = require('stem-porter');
 var stoplist = ["the", "for", "in", "year", "years", "but", "of", "new",
                 "to", "at", "a", "on", "from", "as", "every", "say", 
                 "that", "make", "de", "two", "up", "with", "no", "is", 

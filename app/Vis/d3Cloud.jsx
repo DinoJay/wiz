@@ -44,6 +44,7 @@ d3Cloud.new_draw = function(words, callback, cloud_layout){
   var cloud = d3.select("g").selectAll("g text")
                         .data(words, function(d) { return d.text; });
   //Entering words
+  // TODO: Cloud layout obsolete
   cloud.enter()
     .append("text")
     .on("click", function(d) {
