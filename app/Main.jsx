@@ -70,10 +70,12 @@ var Application = React.createClass({
   
   DataMethod: function(filterString, sortColumn, sortAscending, 
                               page, pageSize, callback) {
+
+    var initialIndex = page * pageSize;
+    var endIndex = initialIndex + pageSize;
       callback({
-        results : this.state.grid_data,
-        pageSize : 20,
-        totalResults: 200
+        results : this.state.grid_data.slice(initialIndex, endIndex),
+        totalResults: this.state.grid_data.length 
       });
   },
 
@@ -109,6 +111,7 @@ var Application = React.createClass({
     grid_data.forEach(function(d){
       d.article = d.key;
       d.id = id++;
+      d.key = id;
     });
     return grid_data;
   },
@@ -259,7 +262,8 @@ var Application = React.createClass({
           <Griddle
             columns={["id", "article"]}
             getExternalResults={this.DataMethod}
-            resultsPerPage={40}
+            resultsPerPage={5}
+            results={this.state.grid_data}
             showSettings={true}
             columnMetadata={columnMeta}
             tableClassName="table"

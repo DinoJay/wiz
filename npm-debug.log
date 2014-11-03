@@ -1,27 +1,81 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'prune' ]
+1 verbose cli [ '/usr/bin/node',
+1 verbose cli   '/usr/bin/npm',
+1 verbose cli   'i',
+1 verbose cli   'git+https://github.com/zyklus/stem',
+1 verbose cli   '--safe' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.33
 4 verbose node symlink /usr/bin/node
 5 warn package.json react-starter@0.0.0 No repository field.
-6 verbose node_modules/adazzle-react-grid unbuild
-7 info preuninstall adazzle-react-grid@0.0.2
-8 info uninstall adazzle-react-grid@0.0.2
-9 verbose true,/home/djan/dev/wiz/node_modules,/home/djan/dev/wiz/node_modules unbuild adazzle-react-grid@0.0.2
-10 info postuninstall adazzle-react-grid@0.0.2
-11 error Error: EACCES, unlink '/home/djan/dev/wiz/node_modules/adazzle-react-grid/node_modules/reactify/node_modules/.bin/jsx'
-11 error  { [Error: EACCES, unlink '/home/djan/dev/wiz/node_modules/adazzle-react-grid/node_modules/reactify/node_modules/.bin/jsx']
-11 error   errno: 3,
-11 error   code: 'EACCES',
-11 error   path: '/home/djan/dev/wiz/node_modules/adazzle-react-grid/node_modules/reactify/node_modules/.bin/jsx' }
-12 error Please try running this command again as root/Administrator.
-13 error System Linux 3.13.0-39-generic
-14 error command "/usr/bin/node" "/usr/bin/npm" "prune"
-15 error cwd /home/djan/dev/wiz
-16 error node -v v0.10.33
-17 error npm -v 1.4.28
-18 error path /home/djan/dev/wiz/node_modules/adazzle-react-grid/node_modules/reactify/node_modules/.bin/jsx
-19 error code EACCES
-20 error errno 3
-21 error stack Error: EACCES, unlink '/home/djan/dev/wiz/node_modules/adazzle-react-grid/node_modules/reactify/node_modules/.bin/jsx'
-22 verbose exit [ 3, true ]
+6 warn package.json node-loader@0.5.0 No repository field.
+7 warn package.json stem-porter@0.0.1 No repository field.
+8 verbose readDependencies using package.json deps
+9 verbose cache add [ 'git+https://github.com/zyklus/stem', null ]
+10 verbose cache add name=undefined spec="git+https://github.com/zyklus/stem" args=["git+https://github.com/zyklus/stem",null]
+11 verbose parsed url { protocol: 'git+https:',
+11 verbose parsed url   slashes: true,
+11 verbose parsed url   auth: null,
+11 verbose parsed url   host: 'github.com',
+11 verbose parsed url   port: null,
+11 verbose parsed url   hostname: 'github.com',
+11 verbose parsed url   hash: null,
+11 verbose parsed url   search: null,
+11 verbose parsed url   query: null,
+11 verbose parsed url   pathname: '/zyklus/stem',
+11 verbose parsed url   path: '/zyklus/stem',
+11 verbose parsed url   href: 'git+https://github.com/zyklus/stem' }
+12 silly lockFile aa6e0228-https-github-com-zyklus-stem https://github.com/zyklus/stem
+13 verbose lock https://github.com/zyklus/stem /home/djan/.npm/aa6e0228-https-github-com-zyklus-stem.lock
+14 verbose addRemoteGit [ 'https://github.com/zyklus/stem', 'master' ]
+15 verbose git remote.origin.url https://github.com/zyklus/stem
+16 verbose git fetch -a origin (https://github.com/zyklus/stem)
+17 verbose git rev-list -n1 master 2da605bd62d6d3473916cad1bea35f344c07c2f7
+18 verbose resolved git url git+https://github.com/zyklus/stem#2da605bd62d6d3473916cad1bea35f344c07c2f7
+19 verbose tar unpack /tmp/user/0/npm-27709-MQFT6ZbU/1414976864641-0.9338389572221786/tmp.tgz
+20 silly lockFile dc5968c8--9338389572221786-tmp-tgz-unpack tar:///tmp/user/0/npm-27709-MQFT6ZbU/1414976864641-0.9338389572221786/tmp.tgz-unpack
+21 verbose lock tar:///tmp/user/0/npm-27709-MQFT6ZbU/1414976864641-0.9338389572221786/tmp.tgz-unpack /home/djan/.npm/dc5968c8--9338389572221786-tmp-tgz-unpack.lock
+22 silly lockFile e4cf1206-64641-0-9338389572221786-tmp-tgz tar:///tmp/user/0/npm-27709-MQFT6ZbU/1414976864641-0.9338389572221786/tmp.tgz
+23 verbose lock tar:///tmp/user/0/npm-27709-MQFT6ZbU/1414976864641-0.9338389572221786/tmp.tgz /home/djan/.npm/e4cf1206-64641-0-9338389572221786-tmp-tgz.lock
+24 silly gunzTarPerm modes [ '755', '644' ]
+25 silly gunzTarPerm extractEntry
+26 silly gunzTarPerm modified mode [ '', 509, 493 ]
+27 silly gunzTarPerm extractEntry README.md
+28 silly gunzTarPerm modified mode [ 'README.md', 436, 420 ]
+29 silly gunzTarPerm extractEntry de.js
+30 silly gunzTarPerm modified mode [ 'de.js', 436, 420 ]
+31 silly gunzTarPerm extractEntry en.js
+32 silly gunzTarPerm modified mode [ 'en.js', 436, 420 ]
+33 silly gunzTarPerm extractEntry fr.js
+34 silly gunzTarPerm modified mode [ 'fr.js', 436, 420 ]
+35 silly gunzTarPerm extractEntry tests/
+36 silly gunzTarPerm modified mode [ 'tests/', 509, 493 ]
+37 silly gunzTarPerm extractEntry tests/de_vocab.js
+38 silly gunzTarPerm modified mode [ 'tests/de_vocab.js', 436, 420 ]
+39 silly gunzTarPerm extractEntry tests/en_vocab.js
+40 silly gunzTarPerm modified mode [ 'tests/en_vocab.js', 436, 420 ]
+41 silly gunzTarPerm extractEntry tests/fr_vocab.js
+42 silly gunzTarPerm modified mode [ 'tests/fr_vocab.js', 436, 420 ]
+43 silly gunzTarPerm extractEntry tests/test.js
+44 silly gunzTarPerm modified mode [ 'tests/test.js', 436, 420 ]
+45 silly gunzTarPerm extractEntry tokenizer.js
+46 silly gunzTarPerm modified mode [ 'tokenizer.js', 436, 420 ]
+47 silly lockFile dc5968c8--9338389572221786-tmp-tgz-unpack tar:///tmp/user/0/npm-27709-MQFT6ZbU/1414976864641-0.9338389572221786/tmp.tgz-unpack
+48 silly lockFile dc5968c8--9338389572221786-tmp-tgz-unpack tar:///tmp/user/0/npm-27709-MQFT6ZbU/1414976864641-0.9338389572221786/tmp.tgz-unpack
+49 silly lockFile e4cf1206-64641-0-9338389572221786-tmp-tgz tar:///tmp/user/0/npm-27709-MQFT6ZbU/1414976864641-0.9338389572221786/tmp.tgz
+50 silly lockFile e4cf1206-64641-0-9338389572221786-tmp-tgz tar:///tmp/user/0/npm-27709-MQFT6ZbU/1414976864641-0.9338389572221786/tmp.tgz
+51 silly lockFile aa6e0228-https-github-com-zyklus-stem https://github.com/zyklus/stem
+52 silly lockFile aa6e0228-https-github-com-zyklus-stem https://github.com/zyklus/stem
+53 error Error: ENOENT, open '/tmp/user/0/npm-27709-MQFT6ZbU/1414976864641-0.9338389572221786/tmp.tgz-unpack/package.json'
+54 error If you need help, you may report this *entire* log,
+54 error including the npm and node versions, at:
+54 error     <http://github.com/npm/npm/issues>
+55 error System Linux 3.13.0-39-generic
+56 error command "/usr/bin/node" "/usr/bin/npm" "i" "git+https://github.com/zyklus/stem" "--safe"
+57 error cwd /home/djan/dev/wiz
+58 error node -v v0.10.33
+59 error npm -v 1.4.28
+60 error path /tmp/user/0/npm-27709-MQFT6ZbU/1414976864641-0.9338389572221786/tmp.tgz-unpack/package.json
+61 error code ENOENT
+62 error errno 34
+63 verbose exit [ 34, true ]
