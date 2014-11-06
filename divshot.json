@@ -1,6 +1,6 @@
 {
   "name": "wiz",
-  "root": "./",
+  "root": "./build/public",
   "clean_urls": true,
   "error_page": "y"
 }
