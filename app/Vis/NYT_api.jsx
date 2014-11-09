@@ -1,5 +1,7 @@
-$ = require('jquery');
-S = require('string');
+var $ = require('jquery');
+var S = require('string');
+var stop_word_removal = require('./stopwords');
+
 var stoplist = ["the", "for", "in", "year", "years", "but", "of", "new",
                 "to", "at", "a", "on", "from", "as", "every", "say", 
                 "that", "make", "de", "two", "up", "with", "no", "is", 
@@ -22,7 +24,8 @@ var stoplist = ["the", "for", "in", "year", "years", "but", "of", "new",
                 ];
 
 var NYT_api = {};
-NYT_api.get_data = function(year, cur_month, page_limit, callback) {
+NYT_api.get_data = function(year, cur_month, page_limit, desk, 
+                            callback) {
 //used to get progress (not done yet)
   var searchTerm = "";
   var per_set = 10;
@@ -30,14 +33,14 @@ NYT_api.get_data = function(year, cur_month, page_limit, callback) {
   var totalDone = 0;
   // global data used for processSets
   var globalData = [];
-  var api_key = "1ca882140f11fee967a0d3a79b348f93:6:69878891";
+  var api_key = "120b4b17dae90dd971d043bd54a1d3f2:18:69878891";
 
   //$progress.text("Beginning work...");
   return processSets(globalData, cur_month, year, per_set, page_counter, 
-                     page_limit, totalDone, api_key, callback);
+                     page_limit, totalDone, desk, api_key, callback);
 };
 
-function fetchForMonth(year, month, page, totalDone, api_key) {
+function fetchForMonth(year, month, page, totalDone, desk, api_key) {
   //YYYYMMDD
   var month_str;
   if(month < 10) month_str = "0"+month; else month_str = month.toString();
@@ -51,48 +54,49 @@ function fetchForMonth(year, month, page, totalDone, api_key) {
           begin_date:startYearStr,
           end_date:endYearStr,
           page:page,
-          fl:"keywords,headline,snippet,pub_date,news_desk"}, function() {
+          fl:"keywords,headline,snippet,pub_date,news_desk,"+
+              "document_type,type_of_material",
+          fq:'source:("The New York Times")'+
+             ' AND document_type:("article") AND news_desk:("'+desk+'")'
+  },
+          function() {
             totalDone++;
   }, "JSON");
 }
 
-function processSets(globalData, cur_month, 
-                     year, per_set, page_counter, page_limit,
-                     totalDone, api_key, callback){
+function processSets(globalData, cur_month, year, per_set, page_counter,
+                     page_limit, totalDone, desk, api_key, callback){
   var promises = [];
   for(var i=0;i<per_set;i++) {
     page_counter++;
 
     var result = fetchForMonth(year, cur_month, page_counter, totalDone, 
-                             api_key);
+                               desk, api_key);
     promises.push(result);
   }
+  var docs = [];
   $.when.apply($, promises).done(function() {
     console.log('DONE with Set '+promises.length +" total "+totalDone);
-    
-    //update progress
-    var percentage = Math.floor(totalDone/page_limit*100);
-    //$progress.text(percentage);
-    
-    //massage into something simpler
-    // handle cases where promises array is 1
-    var docs; 
     for(var i=0,len=arguments.length;i<len;i++) {
-      toAddRaw = (promises.length !== 1) ? arguments[i][0]: arguments[0];
+      var toAddRaw = (promises.length !== 1) ? arguments[i][0]: arguments[0];
       docs = toAddRaw.response.docs;
-      console.log(docs);
       docs.forEach(function(doc){
         if(doc.headline.main !== undefined){
           var headline_lc = doc.headline.main.toLowerCase();
+          var hdln_no_stop_words = stop_word_removal(headline_lc);
           var headline_uc = doc.headline.main;
         // TODO: trim words
-          var words = headline_lc.match(/\S+/g); 
+          var words = hdln_no_stop_words.match(/\S+/g); 
+          if (!words) words = [];
           words.forEach(function(word){
             if (stoplist.indexOf(word) == -1){
               globalData.push({
                 text: word,
                 headline: headline_uc,
+                context_words: words,
                 doc: doc,
+                type: doc.document_type,
+                type_mat: doc.type_of_material,
                 pub_date: doc.pub_date,
                 keywords: doc.keywords,
                 news_desk: doc.news_desk
@@ -105,10 +109,9 @@ function processSets(globalData, cur_month,
     var ret;
     if(docs.length > 0 && page_counter < page_limit){
       setTimeout(function(){
-        console.log("FIRST");
-        ret = processSets(globalData, cur_month, 
-                    year, per_set, page_counter, page_limit, 
-                    totalDone, api_key, callback);
+        ret = processSets(globalData, cur_month, year, per_set, 
+                          page_counter, page_limit, totalDone, desk, 
+                          api_key, callback);
       }, 900);
     }else {
         // callback with the data to be returned

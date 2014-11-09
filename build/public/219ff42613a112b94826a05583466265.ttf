@@ -1,0 +1,11 @@
+// style-loader: Adds some css to the DOM by adding a <style> tag
+var update = require("!/home/djan/dev/wiz/node_modules/style-loader/addStyle.js")(
+	require("!!/home/djan/dev/wiz/node_modules/file-loader/index.js!/home/djan/dev/wiz/bower_components/bootstrap/fonts/glyphicons-halflings-regular.ttf")
+);
+// Hot Module Replacement
+if(module.hot) {
+	module.hot.accept("!!/home/djan/dev/wiz/node_modules/file-loader/index.js!/home/djan/dev/wiz/bower_components/bootstrap/fonts/glyphicons-halflings-regular.ttf", function() {
+		update(require("!!/home/djan/dev/wiz/node_modules/file-loader/index.js!/home/djan/dev/wiz/bower_components/bootstrap/fonts/glyphicons-halflings-regular.ttf"));
+	});
+	module.hot.dispose(function() { update(); });
+}

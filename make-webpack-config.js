@@ -11,7 +11,8 @@ module.exports = function(options) {
 	};
 	var loaders = {
 		"coffee": "coffee-redux-loader",
-		"jsx": options.hotComponents ? ["react-hot-loader", "jsx-loader?harmony"] : "jsx-loader",
+		"js": ["react-hot-loader", "jsx-loader?harmony"],
+		"jsx": options.hotComponents ? ["react-hot-loader", "jsx-loader?harmony", 'es6-loader'] : "jsx-loader",
 		"json": "json-loader",
 		"json5": "json5-loader",
 		"txt": "raw-loader",
@@ -47,7 +48,7 @@ module.exports = function(options) {
 	var externals = [
 
 	];
-	var modulesDirectories = ["web_modules", "node_modules", "bower_components"];
+	var modulesDirectories = ["web_modules", "node_modules"];
 	var extensions = ["", ".web.js", ".js", ".jsx"];
 	var root = path.join(__dirname, "app");
 	var output = {

@@ -1,25 +1,25 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'start' ]
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'run', 'dev-server' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.33
 4 verbose node symlink /usr/bin/node
-5 verbose run-script [ 'prestart', 'start', 'poststart' ]
-6 info prestart react-starter@0.0.0
-7 info start react-starter@0.0.0
+5 verbose run-script [ 'predev-server', 'dev-server', 'postdev-server' ]
+6 info predev-server react-starter@0.0.0
+7 info dev-server react-starter@0.0.0
 8 verbose unsafe-perm in lifecycle true
-9 info react-starter@0.0.0 Failed to exec start script
-10 error react-starter@0.0.0 start: `node lib/server`
+9 info react-starter@0.0.0 Failed to exec dev-server script
+10 error react-starter@0.0.0 dev-server: `webpack-dev-server --content-base config/dev-server-public --config webpack-dev-server.config.js --progress --colors --port 2992`
 10 error Exit status 8
-11 error Failed at the react-starter@0.0.0 start script.
+11 error Failed at the react-starter@0.0.0 dev-server script.
 11 error This is most likely a problem with the react-starter package,
 11 error not with npm itself.
 11 error Tell the author that this fails on your system:
-11 error     node lib/server
+11 error     webpack-dev-server --content-base config/dev-server-public --config webpack-dev-server.config.js --progress --colors --port 2992
 11 error You can get their info via:
 11 error     npm owner ls react-starter
 11 error There is likely additional logging output above.
 12 error System Linux 3.17.0-031700-generic
-13 error command "/usr/bin/node" "/usr/bin/npm" "start"
+13 error command "/usr/bin/node" "/usr/bin/npm" "run" "dev-server"
 14 error cwd /home/djan/dev/wiz
 15 error node -v v0.10.33
 16 error npm -v 1.4.28

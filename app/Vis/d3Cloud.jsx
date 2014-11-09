@@ -25,7 +25,6 @@ var test_data = ["Hello", "world", "normally", "you", "want",
 };
 
 d3Cloud.update = function(el, state, callback){
-  console.log("state data");
   
   var cloud_layout = d3_cloud.cloud().size([500, 500])
     .words(state.data)
