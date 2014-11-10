@@ -12,13 +12,11 @@ module.exports = function(options) {
 	var loaders = {
 		"coffee": "coffee-redux-loader",
 		"js": ["react-hot-loader", "jsx-loader?harmony"],
-		"jsx": options.hotComponents ? ["react-hot-loader", "jsx-loader?harmony", 'es6-loader'] : "jsx-loader",
+		"jsx": options.hotComponents ? ["react-hot-loader", "jsx-loader?harmony"] : "jsx-loader",
 		"json": "json-loader",
 		"json5": "json5-loader",
 		"txt": "raw-loader",
 		"png|jgp|jpeg|gif|svg": "url-loader?limit=10000",
-		"woff": "url-loader?limit=100000",
-		"ttf": "file-loader",
 		"wav|mp3": "file-loader",
 		"html": "html-loader",
 		"md|markdown": ["html-loader", "markdown-loader"],
@@ -26,8 +24,6 @@ module.exports = function(options) {
 	var stylesheetLoaders = {
 		"css": "css-loader!url-loader",
 		"less": "css-loader!less-loader",
-		"styl": "css-loader!stylus-loader",
-		"sass": "css-loader!sass-loader",
                 "woff": "url-loader?limit=10000&minetype=application/font-woff" ,
       "ttf": "file-loader" ,
       "eot": "file-loader" ,

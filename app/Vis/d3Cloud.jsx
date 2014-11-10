@@ -56,6 +56,7 @@ d3Cloud.new_draw = function(words, callback){
     .style("font-family", "Impact")
     .attr("text-anchor", "middle")
     .attr('font-size', 1)
+    .attr('class', 'Word')
     .text(function(d) { return d.key; });
 
   //Entering and existing words
