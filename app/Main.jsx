@@ -7,7 +7,6 @@ var DataTable = require('react-data-components').DataTable;
 var Mygrid = require('./Vis/my_grid');
 var Chart = require('Vis/Chart');
 var Cloud = require('Vis/Cloud');
-var fontSize = d3.scale.log().range([10, 100]);
 var Nyt_api = require('Vis/NYT_api');
 var $ = require('jquery');
 
@@ -17,10 +16,12 @@ var scale = d3.scale.linear();
 scale.domain([0, 60]);
 scale.range([10, 120]);
 scale.clamp(true);
+var fontSize = d3.scale.log().range([15, 100]);
 var fill = d3.scale.category20(); 
 
 var columns = [
-  { title: 'Article', prop: 'article'}
+  { title: 'Article', prop: 'article'},
+  { title: 'Date', prop: 'date'}
 ];
 
 var id = 0;
@@ -76,6 +77,8 @@ var Application = React.createClass({
     grid_data.forEach(function(d){
       d.article = d.key;
       d.id = id++;
+      d.date = d.values[0].pub_date.substring(0, 
+                      d.values[0].pub_date.indexOf('T'));
     });
     return grid_data;
   },
@@ -111,7 +114,7 @@ var Application = React.createClass({
     var spit_data = [];
     Nyt_api.get_data(this.props.start_year, 10, page_limit,
     this.props.news_desk, function(cloud_data){
-        var nested_data = this.nest_data(cloud_data, 180, []);
+        var nested_data = this.nest_data(cloud_data, 300, []);
         clearInterval(t);
         var cl_data = this.state.cloud_data.slice(0);
         cl_data.push(nested_data);
@@ -138,7 +141,7 @@ var Application = React.createClass({
     var t = this.loadCloud(1000);
     Nyt_api.get_data(this.props.start_year, 10, page_limit, 
                      this.props.news_desk, function(cloud_data){
-        var nested_data = this.nest_data(cloud_data, 150, ["ebola"]);
+        var nested_data = this.nest_data(cloud_data, 300, ["ebola"]);
         var cl_data = this.state.cloud_data.slice(0);
         cl_data.push(nested_data);
         this.setState({cloud_data: cl_data,
@@ -173,6 +176,7 @@ var Application = React.createClass({
             sel_docs.push({
               key: w,
               headline: doc.headline,
+              pub_date: doc.pub_date
             });
           });
       });
@@ -182,7 +186,7 @@ var Application = React.createClass({
       console.log("clicked_words");
       console.log(clicked_words);
 
-      var nested_docs = this.nest_data(sel_docs, 100, clicked_words);
+      var nested_docs = this.nest_data(sel_docs, 300, clicked_words);
       console.log("nested docs");
       console.log(nested_docs);
 
@@ -261,7 +265,7 @@ var Application = React.createClass({
             <input type="submit" bsStyle='primary' 
               value="Submit" />
         </form>
-          <div className="col-lg-6"> 
+          <div className="col-lg-12 center-block Centered"> 
             <Cloud data={cloud_data}
               callback={this.word_click_handler}/> 
           </div>
