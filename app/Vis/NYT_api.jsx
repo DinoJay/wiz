@@ -33,7 +33,7 @@ NYT_api.get_data = function(year, cur_month, page_limit, desk,
   var totalDone = 0;
   // global data used for processSets
   var globalData = [];
-  var api_key = "120b4b17dae90dd971d043bd54a1d3f2:18:69878891";
+  var api_key = "888faef2859ec5406dc922631b612ac1:9:69878891";
 
   //$progress.text("Beginning work...");
   return processSets(globalData, cur_month, year, per_set, page_counter, 
@@ -91,7 +91,7 @@ function processSets(globalData, cur_month, year, per_set, page_counter,
           words.forEach(function(word){
             if (stoplist.indexOf(word) == -1){
               globalData.push({
-                text: word,
+                key: word,
                 headline: headline_uc,
                 context_words: words,
                 doc: doc,

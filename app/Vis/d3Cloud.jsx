@@ -2,19 +2,12 @@
 
 var d3 = require('d3');
 var d3_cloud = require('Vis/d3.layout.cloud');
+var d3tooltip = require('d3-tooltip');
 var d3Cloud = {};
 var $ = require('jquery');
-var fill = d3.scale.category20();                                          
 
-/* TESTING */
-var test_data = ["Hello", "world", "normally", "you", "want", 
-                   "more", "words",
-                   "than", "this"].map(function(d) {
-        return {text: d, size: 10 + Math.random() * 90};
-      });
-
-  d3Cloud.create = function(el, state, callback) { 
-        //TODO: props to include as arg
+d3Cloud.create = function(el, state, callback) { 
+  //TODO: props to include as arg
   d3.select(el).append("svg")
     .attr("width", 500)
     .attr("height", 500)
@@ -34,12 +27,14 @@ d3Cloud.update = function(el, state, callback){
     .text(function(d) { return d.key; })
     .fontSize(function(d) { return d.size; })
   .on("end", function(d){
-      this.new_draw(d, callback, cloud_layout);
+      this.new_draw(d, callback);
     }.bind(this))
     .start();
+
 };
 
-d3Cloud.new_draw = function(words, callback, cloud_layout){
+d3Cloud.new_draw = function(words, callback){
+  var tooltip = d3tooltip(d3) 
   var cloud = d3.select("g").selectAll("g text")
                         .data(words, function(d) { return d.text; });
   //Entering words
@@ -47,10 +42,18 @@ d3Cloud.new_draw = function(words, callback, cloud_layout){
   cloud.enter()
     .append("text")
     .on("click", function(d) {
-      callback(d, cloud_layout);
+      callback(d);
     })
+    .on("mouseover", function(d) {
+        var html = d.size
+
+        tooltip.html(html)
+        tooltip.show()    
+      })
+      .on("mouseout", function(){
+        tooltip.hide()
+      })
     .style("font-family", "Impact")
-    .style("fill", function(d, i) { return fill(i); })
     .attr("text-anchor", "middle")
     .attr('font-size', 1)
     .text(function(d) { return d.key; });
@@ -61,6 +64,8 @@ d3Cloud.new_draw = function(words, callback, cloud_layout){
         .duration(200)
         .style("font-size", 
                function(d) { return d.size + "px"; })
+        .style("fill", function(d) {return d.color;})
+        .attr("class", "Hover")
         .attr("transform", function(d) {
           return ("translate(" + [d.x, d.y] + ")rotate(" + 
                   d.rotate + ")");

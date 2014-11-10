@@ -437,7 +437,8 @@ module.exports = function(str) {
         'yours',
         'z',
         '|',
-        'site'
+        'site',
+        'briefing'
     );
          
     // Split out all the individual words in the phrase
